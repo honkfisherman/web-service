@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<head>Test7</head>
+<body>
+
+<div ng-controller="myCtrl">
+
+<select ng-model="$ctrl.selectedName" ng-options="customer.id as customer.name for customer in names" style="width:350px;">
+	<option value="">-- Select Customer --</option>
+</select>
+  
+  
+  Sort by:
+<select ng-model="$ctrl.orderProp">
+  <option value="id">ID</option>
+  <option value="name">Name</option>
+</select>
+        
+        
+<ul>
+  <li ng-repeat="x in names | orderBy:$ctrl.orderProp">
+   {{ x.id + ', ' + x.lastModified + ', ' + x.name + ', ' + x.billingAddress + ', ' + x.shippingAddress + ', ' + x.phoneNumber }}
+  </li>
+</ul>
+
+
+Selected Name is {{$ctrl.selectedName}}
+
+
+
+<script>
+'use strict';
+angular.module('myApp', [])
+.controller('myCtrl', function myCtrl($scope, $http) {
+  $http.get("http://localhost:8080/financials/services/Rest/account").then(function (response) {
+      $scope.names = response.data.value;
+      //$scope.orderProp = 'id';
+  }, function(response) {
+      //Second function handles error
+      alert("Error");
+      $scope.content = "Something went wrong";      
+  });
+});
+
+/* This is what the json data looks like:
+ * {"value":[{"id":1,"lastModified":"2016-06-01T23:26:17.072Z","name":"Bobby Adamss","billingAddress":"545 Montreal St.","shippingAddress":null,"phoneNumber":"555-8746"},{"id":2,"lastModified":"2016-06-01T23:47:13.795Z","name":"Mike Hussey","billingAddress":"545 Eau Gallie St.","shippingAddress":null,"phoneNumber":"444-8746"}]}
+ */
+</script>
+</div>
+</body>
+</html>
